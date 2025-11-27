@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { PropsWithChildren } from "react";
 import LayoutBase from "@/containers/layout/base";
-import { Providers } from "./providers";
+import Providers from "./providers";
 import "./globals.css";
 
 const fontInter = Inter({

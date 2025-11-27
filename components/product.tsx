@@ -5,7 +5,6 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/ui/button";
 import {
   Card,
-  CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -33,7 +32,7 @@ export const ProductCard = (props: ProductCardProps) => {
           className="object-cover transition duration-500"
         />
       </div>
-      <CardHeader className="space-y-2 border-y p-3">
+      <CardHeader className="border-y p-3">
         <CardTitle className="line-clamp-2 text-base">{props.title}</CardTitle>
       </CardHeader>
       <CardFooter className="flex items-center justify-between p-3">
