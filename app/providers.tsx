@@ -1,37 +1,32 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
-import { loggerLink } from "@trpc/client/links/loggerLink";
-import { createTRPCReact } from "@trpc/react-query";
-import superjson from "superjson";
 import { useState, type PropsWithChildren } from "react";
-import type { AppRouter } from "@/server/root";
 import { TooltipProvider } from "@/ui/tooltip";
+import type { RouterClient } from "@orpc/server";
+import { createORPCClient } from "@orpc/client";
+import { RPCLink } from "@orpc/client/fetch";
+import type { AppRouter } from "@/server/router";
 
-const trpc = createTRPCReact<AppRouter>();
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return "http://localhost:3000";
+};
 
-const Trpc = (props: PropsWithChildren) => {
+const link = new RPCLink({
+  url: `${getBaseUrl()}/api/rpc`,
+});
+
+export const orpc: RouterClient<AppRouter> = createORPCClient(link);
+
+const QueryClientProviderWrapper = (props: PropsWithChildren) => {
   const [queryClient] = useState(() => new QueryClient());
-  const [trpcClient] = useState(() =>
-    trpc.createClient({
-      links: [
-        loggerLink({
-          enabled: () => process.env.NODE_ENV === "development",
-        }),
-        httpBatchLink({
-          url: "/api/trpc",
-          transformer: superjson,
-        }),
-      ],
-    })
-  );
 
   return (
     <QueryClientProvider client={queryClient}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        {props.children}
-      </trpc.Provider>
+      {props.children}
     </QueryClientProvider>
   );
 };
@@ -43,7 +38,7 @@ const Tooltip = (props: PropsWithChildren) => (
 export default function Providers(props: PropsWithChildren) {
   return (
     <Tooltip>
-      <Trpc>{props.children}</Trpc>
+      <QueryClientProviderWrapper>{props.children}</QueryClientProviderWrapper>
     </Tooltip>
   );
 }

@@ -1,6 +1,11 @@
+"use client";
+
 import { ProductCard } from "@/components/product";
+import { useOrpc } from "@/hooks/orpc";
 
 export default function Home() {
+  const { data } = useOrpc("ping");
+  console.log(data);
   return (
     <section>
       <div className="container">
